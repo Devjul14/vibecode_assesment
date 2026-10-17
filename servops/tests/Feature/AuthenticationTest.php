@@ -67,6 +67,24 @@ class AuthenticationTest extends TestCase
         $this->assertGuest();
     }
 
+    public function test_demo_link_prefills_form_server_side_without_javascript(): void
+    {
+        $this->get(route('login', ['as' => 'dewi@servops.test']))
+            ->assertSee('value="dewi@servops.test"', false)
+            ->assertSee('value="password"', false)
+            ->assertSee('href="'.e(route('login', ['as' => 'sari@servops.test'])).'"', false);
+
+        $this->get(route('login', ['as' => 'orang@luar.test']))
+            ->assertDontSee('value="orang@luar.test"', false)
+            ->assertDontSee('value="password"', false);
+
+        config(['servops.demo_accounts' => false]);
+
+        $this->get(route('login', ['as' => 'dewi@servops.test']))
+            ->assertDontSee('value="dewi@servops.test"', false)
+            ->assertDontSee('value="password"', false);
+    }
+
     public function test_plain_post_login_works_without_javascript(): void
     {
         $this->get('/login')->assertSee('action="'.route('login.store').'"', false)->assertSee('name="password"', false);
