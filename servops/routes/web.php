@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Auth\LoginController;
 use App\Livewire\Auth\Login;
 use App\Livewire\Dashboard;
 use App\Livewire\Recommendations\Index as RecommendationIndex;
@@ -16,6 +17,7 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Route;
 
 Route::livewire('/login', Login::class)->middleware('guest')->name('login');
+Route::post('/login', [LoginController::class, 'store'])->middleware('guest')->name('login.store');
 
 Route::middleware('auth')->group(function () {
     Route::get('/', fn () => redirect()->route(Gate::allows('dashboard.view') ? 'dashboard' : 'requests.index'))->name('home');

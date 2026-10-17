@@ -5,24 +5,25 @@
         <p class="mt-1 text-sm text-slate-500">Service Operations & Capacity Planning</p>
     </div>
 
-    <form wire:submit="login" class="animate-enter space-y-4 rounded-2xl border border-slate-200 bg-white p-6 shadow-xl shadow-slate-200/60" style="--i: 1">
+    <form wire:submit="login" method="POST" action="{{ route('login.store') }}" class="animate-enter space-y-4 rounded-2xl border border-slate-200 bg-white p-6 shadow-xl shadow-slate-200/60" style="--i: 1">
+        @csrf
         <div>
             <label for="email" class="block text-sm font-medium text-slate-700">Email</label>
-            <input id="email" type="email" wire:model="email" autocomplete="username" autofocus
+            <input id="email" name="email" type="email" value="{{ $email }}" wire:model="email" autocomplete="username" autofocus
                 class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm transition focus:border-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-100">
             @error('email') <p class="mt-1 text-xs text-rose-600" wire:transition>{{ $message }}</p> @enderror
         </div>
         <div x-data="{ show: false }">
             <label for="password" class="block text-sm font-medium text-slate-700">Password</label>
             <div class="relative mt-1">
-                <input id="password" :type="show ? 'text' : 'password'" wire:model="password" autocomplete="current-password"
+                <input id="password" name="password" type="password" :type="show ? 'text' : 'password'" wire:model="password" autocomplete="current-password"
                     class="w-full rounded-lg border border-slate-300 px-3 py-2 pr-16 text-sm transition focus:border-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-100">
                 <button type="button" @click="show = !show" class="absolute inset-y-0 right-2 my-auto h-7 rounded px-2 text-xs text-slate-500 hover:bg-slate-100" x-text="show ? 'Sembunyi' : 'Lihat'"></button>
             </div>
             @error('password') <p class="mt-1 text-xs text-rose-600">{{ $message }}</p> @enderror
         </div>
         <label class="flex items-center gap-2 text-sm text-slate-600">
-            <input type="checkbox" wire:model="remember" class="rounded border-slate-300 text-indigo-600"> Ingat saya
+            <input type="checkbox" name="remember" value="1" wire:model="remember" class="rounded border-slate-300 text-indigo-600"> Ingat saya
         </label>
         <x-ui.button type="submit" target="login" class="w-full justify-center py-2.5">Masuk</x-ui.button>
     </form>

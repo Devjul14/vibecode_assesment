@@ -67,6 +67,41 @@ class AuthenticationTest extends TestCase
         $this->assertGuest();
     }
 
+    public function test_plain_post_login_works_without_javascript(): void
+    {
+        $this->get('/login')->assertSee('action="'.route('login.store').'"', false)->assertSee('name="password"', false);
+
+        $this->post(route('login.store'), ['email' => 'sari@servops.test', 'password' => 'password'])
+            ->assertRedirect(route('home'));
+
+        $this->assertAuthenticated();
+    }
+
+    public function test_plain_post_login_failure_returns_to_form_with_error_and_email(): void
+    {
+        $this->from(route('login'))
+            ->post(route('login.store'), ['email' => 'sari@servops.test', 'password' => 'salah'])
+            ->assertRedirect(route('login'))
+            ->assertSessionHasErrors('email');
+
+        $this->get(route('login'))->assertSee('value="sari@servops.test"', false);
+        $this->assertGuest();
+    }
+
+    public function test_rate_limit_per_email_cannot_be_bypassed_by_changing_ip(): void
+    {
+        for ($i = 0; $i < 10; $i++) {
+            $this->withServerVariables(['REMOTE_ADDR' => "10.0.0.{$i}"])
+                ->post(route('login.store'), ['email' => 'rudi@servops.test', 'password' => 'salah']);
+        }
+
+        $this->withServerVariables(['REMOTE_ADDR' => '10.0.0.99'])
+            ->post(route('login.store'), ['email' => 'rudi@servops.test', 'password' => 'password'])
+            ->assertSessionHasErrors(['email' => 'Terlalu banyak percobaan. Coba lagi dalam '.RateLimiter::availableIn('email|rudi@servops.test').' detik.']);
+
+        $this->assertGuest();
+    }
+
     public function test_home_redirects_by_role(): void
     {
         $this->loginAs('sari');

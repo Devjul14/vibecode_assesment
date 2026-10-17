@@ -1,3 +1,12 @@
+/**
+ * Livewire + Alpine dibundel lewat Vite (bukan route /livewire-xxx/livewire.js) agar tetap termuat
+ * di server yang memblokir file .js dinamis atau di belakang proxy HTTPS. Dimulai di akhir file.
+ */
+import { Alpine, Livewire } from '../../vendor/livewire/livewire/dist/livewire.esm';
+
+window.Alpine = Alpine;
+window.Livewire = Livewire;
+
 const prefersReducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 document.addEventListener('alpine:init', () => {
@@ -80,3 +89,5 @@ document.addEventListener('alpine:init', () => {
         );
     });
 });
+
+Livewire.start();

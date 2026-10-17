@@ -155,6 +155,6 @@
         </template>
     </div>
 
-    @livewireScripts
+    @livewireScriptConfig
 </body>
 </html>
