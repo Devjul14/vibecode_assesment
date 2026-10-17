@@ -16,7 +16,7 @@
         <div x-data="{ show: false }">
             <label for="password" class="block text-sm font-medium text-slate-700">Password</label>
             <div class="relative mt-1">
-                <input id="password" name="password" type="password" :type="show ? 'text' : 'password'" wire:model="password" autocomplete="current-password"
+                <input id="password" name="password" type="password" value="{{ $password }}" :type="show ? 'text' : 'password'" wire:model="password" autocomplete="current-password"
                     class="w-full rounded-lg border border-slate-300 px-3 py-2 pr-16 text-sm transition focus:border-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-100">
                 <button type="button" @click="show = !show" class="absolute inset-y-0 right-2 my-auto h-7 rounded px-2 text-xs text-slate-500 hover:bg-slate-100" x-text="show ? 'Sembunyi' : 'Lihat'"></button>
             </div>
@@ -30,11 +30,12 @@
 
     @if ($demoAccounts->isNotEmpty())
         <div class="animate-enter mt-6 rounded-2xl border border-dashed border-slate-300 bg-white/60 p-4" style="--i: 2">
-            <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Akun demo · password: <code class="rounded bg-slate-100 px-1">password</code></p>
+            <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Akun demo · password: <code class="rounded bg-slate-100 px-1">{{ config('servops.demo_password') }}</code></p>
             <div class="mt-3 grid grid-cols-2 gap-2">
                 @foreach ($demoAccounts as $account)
-                    <button type="button"
-                        x-on:click="$wire.email = @js($account->email); $wire.password = 'password'; $nextTick(() => document.getElementById('password').focus())"
+                    {{-- Link biasa (?as=email) agar tetap mengisi form walau JavaScript gagal dimuat; dengan JS diisi instan. --}}
+                    <a href="{{ route('login', ['as' => $account->email]) }}"
+                        x-on:click.prevent="$wire.email = @js($account->email); $wire.password = @js(config('servops.demo_password')); $nextTick(() => document.getElementById('password').focus())"
                         data-demo-email="{{ $account->email }}"
                         class="group flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-2.5 py-2 text-left transition hover:-translate-y-0.5 hover:border-indigo-300 hover:shadow-md">
                         <span class="flex size-7 shrink-0 items-center justify-center rounded-full bg-indigo-50 text-[11px] font-semibold text-indigo-700 transition group-hover:bg-indigo-600 group-hover:text-white">{{ $account->initials() }}</span>
@@ -42,7 +43,7 @@
                             <span class="block truncate text-xs font-medium text-slate-800">{{ $account->name }}</span>
                             <span class="block text-[11px] text-slate-500">{{ $account->role->label() }}</span>
                         </span>
-                    </button>
+                    </a>
                 @endforeach
             </div>
         </div>

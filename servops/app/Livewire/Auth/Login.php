@@ -19,13 +19,23 @@ class Login extends Component
 
     public bool $remember = false;
 
-    /** Bawa email & error dari fallback POST (tanpa JavaScript) ke form. */
+    /**
+     * Bawa email & error dari fallback POST ke form, dan isi akun demo dari ?as=email
+     * (dirender server, jadi tetap jalan walau JavaScript gagal dimuat).
+     */
     public function mount(): void
     {
         $this->email = (string) old('email', '');
 
         foreach (session('errors')?->getBag('default')->messages() ?? [] as $field => $messages) {
             $this->addError($field, $messages[0]);
+        }
+
+        $demoEmail = (string) request()->query('as', '');
+
+        if ($demoEmail !== '' && config('servops.demo_accounts') && User::query()->where('email', $demoEmail)->exists()) {
+            $this->email = $demoEmail;
+            $this->password = (string) config('servops.demo_password');
         }
     }
 

@@ -26,6 +26,8 @@ return [
 
     'demo_accounts' => env('SERVOPS_DEMO_ACCOUNTS', true),
 
+    'demo_password' => 'password',
+
     /*
     | Izinkan tombol "Reset data simulasi" (migrate:fresh --seed). Default hanya di environment local.
     */
