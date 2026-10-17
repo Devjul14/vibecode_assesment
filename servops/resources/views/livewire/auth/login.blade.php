@@ -33,7 +33,8 @@
             <div class="mt-3 grid grid-cols-2 gap-2">
                 @foreach ($demoAccounts as $account)
                     <button type="button"
-                        wire:click="$set('email', '{{ $account->email }}'); $set('password', 'password')"
+                        x-on:click="$wire.email = @js($account->email); $wire.password = 'password'; $nextTick(() => document.getElementById('password').focus())"
+                        data-demo-email="{{ $account->email }}"
                         class="group flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-2.5 py-2 text-left transition hover:-translate-y-0.5 hover:border-indigo-300 hover:shadow-md">
                         <span class="flex size-7 shrink-0 items-center justify-center rounded-full bg-indigo-50 text-[11px] font-semibold text-indigo-700 transition group-hover:bg-indigo-600 group-hover:text-white">{{ $account->initials() }}</span>
                         <span class="min-w-0">

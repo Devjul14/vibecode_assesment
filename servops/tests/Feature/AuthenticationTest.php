@@ -28,6 +28,17 @@ class AuthenticationTest extends TestCase
         $this->get('/login')->assertOk()->assertSee('Masuk ke ServOps')->assertSee('sari@servops.test');
     }
 
+    public function test_demo_accounts_fill_the_form_client_side_and_can_be_hidden(): void
+    {
+        $this->get('/login')
+            ->assertSee('data-demo-email="dewi@servops.test"', false)
+            ->assertDontSee("\$set('email'", false);
+
+        config(['servops.demo_accounts' => false]);
+
+        $this->get('/login')->assertOk()->assertDontSee('Akun demo');
+    }
+
     public function test_user_can_login_and_is_sent_home(): void
     {
         Livewire::test(Login::class)
