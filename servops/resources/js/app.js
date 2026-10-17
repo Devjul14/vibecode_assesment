@@ -90,4 +90,10 @@ document.addEventListener('alpine:init', () => {
     });
 });
 
+/** Laporkan request Livewire yang gagal ke banner diagnosa (x-ui.js-health) alih-alih diam saja. */
+Livewire.hook('request', ({ fail }) => {
+    fail(({ status }) => window.servopsReportFailure?.(status));
+});
+
 Livewire.start();
+window.__servopsBooted = true;

@@ -155,6 +155,7 @@
         </template>
     </div>
 
+    <x-ui.js-health />
     @livewireScriptConfig
 </body>
 </html>
